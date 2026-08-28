@@ -28,6 +28,9 @@ Route::post('/login', [AuthController::class, 'login'])->name('login');
 // Route pour un Utilisateur connecte en tamps que User
 Route::prefix('/user')->middleware(['auth'])->group(function(){
     Route::get('/index', [DashboardController::class, 'index'])->name('user.dashboard');
+    Route::get('/movements', [MovementsController::class, 'show'])->name('user.movements.show');
+    Route::post('/movements', [MovementsController::class, 'store'])->name('user.movements.store');
+    Route::delete('/movements/{id}', [MovementsController::class, 'destroy'])->name('user.movements.destroy');
 
     Route::get('/items', [ItemsController::class, 'show'])->name('user.items.show');
     Route::post('/items', [ItemsController::class, 'save'])->name('user.items.save');
