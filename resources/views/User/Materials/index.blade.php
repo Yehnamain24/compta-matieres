@@ -118,6 +118,9 @@
                         <i class="fa-solid fa-xmark"></i>
                     </button>
                 </div>
+                <a href="{{ route('materiels.export') }}" class="btn btn-outline-light">
+                    <i class="bi bi-file-earmark-excel"></i> Exporter en Excel
+                </a>
                 <form method="POST" action="{{ route('user.items.save') }}">
                     @csrf
                     <div class="modal-body">

@@ -57,6 +57,7 @@ class MovementsController extends Controller
         'user_id' => Auth::id(),
         'quantity' => $validated['quantity'],
         'comment' => $validated['comment'] ?? null,
+        'movement_date' => $validated['movement_date'] ?? now(),
     ]);
 
     return redirect()->route('user.movements.show')

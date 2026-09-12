@@ -11,10 +11,17 @@ class PublicController extends Controller
 {
     public function home()
     {
-        return view('welcome',[
+        $featuredItem = Item::with(['category', 'status', 'stockmovements' => function ($query) {
+            $query->latest();
+        }])->latest()->first();
+
+        return view('welcome', [
             'items_count' => Item::count(),
-            'stock_movements_count' => StockMovement::count(),
+            'stock_movements_count' => StockMovement::whereMonth('created_at', now()->month)
+                ->whereYear('created_at', now()->year)
+                ->count(),
             'categories_count' => Category::count(),
+            'featuredItem' => $featuredItem,
         ]);
     }
 }

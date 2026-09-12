@@ -95,7 +95,7 @@
                     <button type="button" class="btn-close-registre" data-bs-dismiss="modal" aria-label="Fermer"><i
                             class="fa-solid fa-xmark"></i></button>
                 </div>
-                <form method="POST" action="#">
+                <form method="POST" action="{{ route('user.status.store') }}">
                     @csrf
                     <div class="modal-body">
                         <label for="nom_statut_ajout" class="form-label">Nom du statut</label>
@@ -122,7 +122,7 @@
                         <button type="button" class="btn-close-registre" data-bs-dismiss="modal" aria-label="Fermer"><i
                                 class="fa-solid fa-xmark"></i></button>
                     </div>
-                    <form method="POST" action="#">
+                    <form method="POST" action="{{ route('user.status.update', $status->id) }}">
                         @csrf
                         @method('PUT')
                         <div class="modal-body">
@@ -156,7 +156,7 @@
                             le statut <strong>« {{ $status->name }}
                                 »</strong> ? Cette action est irréversible.</p>
                     </div>
-                    <form method="POST" action="#">
+                   <form method="POST" action="{{ route('user.status.destroy', $status->id) }}">
                         @csrf
                         @method('DELETE')
                         <div class="modal-footer">

@@ -68,12 +68,12 @@
 
             {{-- ================= ACTIONS ================= --}}
             <div class="d-flex flex-wrap justify-content-end gap-2 mb-4">
-                <button type="button" class="btn btn-outline-navy">
+                <a href="{{ route('materiels.export') }}" class="btn btn-outline-navy">
                     <i class="fa-solid fa-file-export me-2"></i>Exporter les données (.XLS/CSV)
-                </button>
-                <button type="button" class="btn btn-navy">
+                </a>
+                <a href="{{ route('user.items.show') }}" class="btn btn-navy">
                     <i class="fa-solid fa-plus me-2"></i>Nouvelle fiche
-                </button>
+                </a>
             </div>
 
             {{-- ================= KPI ================= --}}

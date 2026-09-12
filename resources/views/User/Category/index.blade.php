@@ -124,7 +124,7 @@
                             <i class="fa-solid fa-xmark"></i>
                         </button>
                     </div>
-                    <form method="POST" action="#">
+                    <form method="POST" action="{{ route('user.category.update', $category->id) }}">
                         @csrf
                         @method('PUT')
                         <div class="modal-body">
@@ -161,7 +161,7 @@
                             Cette action est irréversible.
                         </p>
                     </div>
-                    <form method="POST" action="#">
+                    <form method="POST" action="{{ route('user.category.delete', $category->id) }}">
                         @csrf
                         @method('DELETE')
                         <div class="modal-footer">

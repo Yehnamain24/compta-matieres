@@ -14,8 +14,15 @@
                     <span class="profile-icon"><i class="fa-solid fa-user"></i></span>
                     <span class="profile-name-block text-start">
                         <span class="profile-name d-block">{{ auth()->user()->name ?? 'Utilisateur' }}</span>
-                        <span
-                            class="profile-role">{{ auth()->user()->role == 'user' ? 'Utilisateur' : 'Adminstrateur' }}</span>
+                         <span class="profile-role">
+                            @if(auth()->user()->role == 'admin')
+                                Administrateur
+                            @elseif(auth()->user()->role == 'comptable_matieres')
+                                Comptable-matières
+                            @else
+                                Utilisateur
+                            @endif
+                        </span>s
                     </span>
                     <i class="fa-solid fa-chevron-down" style="font-size:.7rem; color:var(--ink-600);"></i>
                 </button>

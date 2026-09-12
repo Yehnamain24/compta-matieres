@@ -18,12 +18,12 @@
     {{-- ================= NAVBAR ================= --}}
     <nav class="navbar navbar-expand-lg navbar-registre py-3">
         <div class="container">
-            <a class="navbar-brand d-flex align-items-center gap-2" href="{{ route('home') }}">
-                <span class="brand-mark">CM</span>
-                <span class="brand-text">
-                    Comptabilité-Matières
-                    <small>Faculté des Sciences — Université de Douala</small>
-                </span>
+           <a class="navbar-brand d-flex align-items-center gap-2" href="{{ route('home') }}">
+            <img src="{{ asset('images/img2.png') }}" alt="Logo Faculté des Sciences" style="height: 65px; width: auto;">
+            <span class="brand-text">
+                                     Comptabilité-Matières
+                 <small>Faculté des Sciences — Université de Douala</small>
+            </span>
             </a>
             <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navRegistre">
                 <i class="fa-solid fa-bars"></i>
@@ -66,17 +66,37 @@
 
                 <div class="col-lg-6">
                     <div class="fiche-card">
-                        <div class="fiche-head">
-                            <div>
-                                <p class="fiche-code mb-1">FICHE N° SM-2026-0184</p>
-                                <p class="fiche-titre mb-0">Projecteur GID 2 — Fac Science UDO</p>
+                        @if ($featuredItem)
+                            <div class="fiche-head">
+                                <div>
+                                    <p class="fiche-code mb-1">FICHE N° {{ $featuredItem->code }}</p>
+                                    <p class="fiche-titre mb-0">{{ $featuredItem->name }}</p>
+                                </div>
+                                <span class="badge-etat bon">{{ strtoupper($featuredItem->status->name ?? 'STATUT INCONNU') }}</span>
                             </div>
-                            <span class="badge-etat bon">BON ÉTAT</span>
-                        </div>
-                        <div class="fiche-row"><span>Catégorie</span><span>Matériel scientifique</span></div>
-                        <div class="fiche-row"><span>Quantité en stock</span><span>07</span></div>
-                        <div class="fiche-row"><span>Dernier mouvement</span><span>Entrée — 03/08/2026</span></div>
-                        <div class="fiche-row" style="border-bottom:none;"><span>Localisation</span><span>Magasin central</span></div>
+                            <div class="fiche-row"><span>Catégorie</span><span>{{ $featuredItem->category->name ?? '—' }}</span></div>
+                            <div class="fiche-row"><span>Quantité en stock</span><span>{{ str_pad($featuredItem->quantity, 2, '0', STR_PAD_LEFT) }}</span></div>
+                            <div class="fiche-row">
+                                <span>Dernier mouvement</span>
+                                <span>
+                                    @if ($featuredItem->stockmovements->isNotEmpty())
+                                        {{ ucfirst($featuredItem->stockmovements->first()->type) }} — {{ $featuredItem->stockmovements->first()->created_at->format('d/m/Y') }}
+                                    @else
+                                        Aucun mouvement
+                                    @endif
+                                </span>
+                            </div>
+                            <div class="fiche-row" style="border-bottom:none;"><span>Localisation</span><span>{{ $featuredItem->location ?? '—' }}</span></div>
+                        @else
+                            <div class="fiche-head">
+                                <div>
+                                    <p class="fiche-titre mb-0">Aucun matériel enregistré</p>
+                                </div>
+                            </div>
+                            <p style="color:var(--ink-600); font-size:.9rem; margin-top:1rem;">
+                                Les fiches matériel apparaîtront ici dès qu'un enregistrement sera créé.
+                            </p>
+                        @endif
                         <div class="cachet">
                             <div class="cachet-text">COMPTABILITÉ<br>MATIÈRES<br>★ VÉRIFIÉ ★</div>
                         </div>
@@ -113,6 +133,8 @@
     {{-- ================= MODULES ================= --}}
     <section class="section" id="modules">
         <div class="container">
+        <div class="row g-4">
+            {{-- ... le reste des cartes modules reste inchangé ... --}}
             <p class="eyebrow mb-2">Périmètre fonctionnel</p>
             <h2 class="section-title mb-5">Cinq modules, un seul registre</h2>
 

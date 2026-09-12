@@ -20,6 +20,7 @@ class Item extends Model
         'user_id'
     ];
 
+    // Relations originales (anglais)
     public function category(): BelongsTo
     {
         return $this->belongsTo(Category::class, 'category_id');
@@ -38,5 +39,32 @@ class Item extends Model
     public function stockmovements(): HasMany
     {
         return $this->hasMany(StockMovement::class);
+    }
+
+    // --- Alias en français ---
+
+    public function categorie(): BelongsTo
+    {
+        return $this->category();
+    }
+
+    public function statut(): BelongsTo
+    {
+        return $this->status();
+    }
+
+    public function getNomAttribute()
+    {
+        return $this->name;
+    }
+
+    public function getQuantiteAttribute()
+    {
+        return $this->quantity;
+    }
+
+    public function getEmplacementAttribute()
+    {
+        return $this->location;
     }
 }

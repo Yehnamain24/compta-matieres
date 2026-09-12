@@ -47,6 +47,11 @@ class AuthController extends Controller
         } else {
             return redirect()->back()->withErrors('Email ou mot de passe incorrect !');
         }
+
+        if (!Auth::user()->is_approved) {
+        Auth::logout();
+        return back()->withErrors(['email' => 'Votre compte est en attente d\'approbation par un administrateur.']);
+        }
     }
 
     public function logout(Request $request)
@@ -55,4 +60,6 @@ class AuthController extends Controller
         Auth::logout();
         return redirect()->route('login')->with('success', 'Vous etes deconnecté !');
     }
+
+
 }

@@ -28,15 +28,16 @@
                 <i class="fa-solid fa-chart-column"></i> Rapports
             </a>
 
-            @if (auth()->user()->role == 'admin')
-                <p class="sidebar-section-title">Administration</p>
-                <a href="#" class="sidebar-link">
-                    <i class="fa-solid fa-user-shield"></i> Utilisateurs
-                </a>
-                <a href="#" class="sidebar-link">
-                    <i class="fa-solid fa-sliders"></i> Paramètres
-                </a>
-            @endif
+                    @if (auth()->user()->role == 'admin')
+            <p class="sidebar-section-title">Administration</p>
+            <a href="{{ route('admin.users.index') }}" class="sidebar-link">
+                <i class="fa-solid fa-user-shield"></i> Utilisateurs
+            </a>
+            <a href="{{ route('admin.settings') }}" class="sidebar-link">
+                <i class="fa-solid fa-sliders"></i> Paramètres
+            </a>
+        @endif
+
         </nav>
 
         <div class="sidebar-footer">

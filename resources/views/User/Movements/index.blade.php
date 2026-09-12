@@ -108,7 +108,7 @@
                     <button type="button" class="btn-close-registre" data-bs-dismiss="modal" aria-label="Fermer"><i
                             class="fa-solid fa-xmark"></i></button>
                 </div>
-                <form method="POST" action="#">
+                <form method="POST" action="{{ route('user.movements.store') }}">
                     @csrf
                     <div class="modal-body">
                         <div class="row g-3">
@@ -178,7 +178,7 @@
                         <button type="button" class="btn-close-registre" data-bs-dismiss="modal"
                             aria-label="Fermer"><i class="fa-solid fa-xmark"></i></button>
                     </div>
-                    <form method="POST" action="#">
+                    <form method="POST" action="{{ route('user.movements.destroy', $movement->id) }}">
                         @csrf
                         @method('PUT')
                         <div class="modal-body">

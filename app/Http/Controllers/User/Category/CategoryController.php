@@ -32,9 +32,20 @@ class CategoryController extends Controller
         return redirect()->back()->with('success', 'Categorie ajoutee avec success !');
     }
 
+    public function update(Request $request, mixed $id)
+    {
+        $category = Category::where('id', $id)->firstOrFail();
+        $data = $request->validate([
+            'name' => ['string', 'max:2500', 'required'],
+        ]);
+
+        $category->update($data);
+        return redirect()->back()->with('success', 'Categorie mise a jour avec success !');
+    }
+
     public function delete(mixed $id)
     {
-        $category = Category::where('id', $id)->findOrdFail();
+        $category = Category::where('id', $id)->firstOrFail();
         $category->delete();
 
         return back()->with('success', 'Suppression reussie !');
