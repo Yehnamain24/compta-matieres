@@ -8,6 +8,9 @@ use Illuminate\Http\Request;
 
 class StatusController extends Controller
 {
+    /**
+     * Affiche la liste des statuts.
+     */
     public function show()
     {
         return view('User.Status.index', [
@@ -15,10 +18,19 @@ class StatusController extends Controller
         ]);
     }
 
+    /**
+     * Enregistre un nouveau statut.
+     */
     public function store(Request $request)
     {
+        // Validation avec vérification d'unicité
         $validated = $request->validate([
-            'name' => 'required|string|max:255',
+            'name' => 'required|string|max:255|unique:statuses,name',
+        ], [
+            // Messages d'erreur personnalisés en français
+            'name.required' => 'Le nom du statut est obligatoire.',
+            'name.unique' => 'Ce statut existe déjà dans le système.',
+            'name.max' => 'Le nom ne doit pas dépasser 255 caractères.',
         ]);
 
         Status::create($validated);
@@ -26,10 +38,18 @@ class StatusController extends Controller
         return redirect()->route('user.status.show')->with('success', 'Statut ajouté avec succès.');
     }
 
+    /**
+     * Met à jour un statut existant.
+     */
     public function update(Request $request, Status $status)
     {
+        // Validation avec unicité (en ignorant le statut actuel)
         $validated = $request->validate([
-            'name' => 'required|string|max:255',
+            'name' => 'required|string|max:255|unique:statuses,name,' . $status->id,
+        ], [
+            'name.required' => 'Le nom du statut est obligatoire.',
+            'name.unique' => 'Ce statut existe déjà dans le système.',
+            'name.max' => 'Le nom ne doit pas dépasser 255 caractères.',
         ]);
 
         $status->update($validated);
@@ -37,6 +57,9 @@ class StatusController extends Controller
         return redirect()->route('user.status.show')->with('success', 'Statut mis à jour avec succès.');
     }
 
+    /**
+     * Supprime un statut.
+     */
     public function destroy(Status $status)
     {
         $status->delete();

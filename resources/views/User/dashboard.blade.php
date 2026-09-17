@@ -20,13 +20,13 @@
 <body>
 
     {{-- ================= SIDEBAR ================= --}}
-
     @include('User.Layouts.Sidebar')
+
     <div class="main-content">
 
         {{-- ================= TOPBAR ================= --}}
-
         @include('User.Layouts.Navbar')
+
         <div class="page-body">
 
             {{-- ================= MESSAGES (succès / erreurs) ================= --}}
@@ -84,7 +84,7 @@
                             <span class="kpi-icon"><i class="fa-solid fa-boxes-stacked"></i></span>
                         </div>
                         <p class="kpi-label mb-1">Fiches enregistrées</p>
-                        <p class="kpi-value mb-0">{{ $totalItems ?? '1 284' }}</p>
+                        <p class="kpi-value mb-0">{{ $totalItems ?? '0' }}</p>
                     </div>
                 </div>
                 <div class="col-sm-6 col-xl-3">
@@ -93,7 +93,7 @@
                             <span class="kpi-icon"><i class="fa-solid fa-right-left"></i></span>
                         </div>
                         <p class="kpi-label mb-1">Mouvements ce mois</p>
-                        <p class="kpi-value mb-0">{{ $movementsThisMonth ?? '96' }}</p>
+                        <p class="kpi-value mb-0">{{ $movementsThisMonth ?? '0' }}</p>
                     </div>
                 </div>
                 <div class="col-sm-6 col-xl-3">
@@ -102,7 +102,7 @@
                             <span class="kpi-icon"><i class="fa-solid fa-tags"></i></span>
                         </div>
                         <p class="kpi-label mb-1">Catégories suivies</p>
-                        <p class="kpi-value mb-0">{{ $totalCategories ?? '20' }}</p>
+                        <p class="kpi-value mb-0">{{ $totalCategories ?? '0' }}</p>
                     </div>
                 </div>
                 <div class="col-sm-6 col-xl-3">
@@ -111,24 +111,27 @@
                             <span class="kpi-icon"><i class="fa-solid fa-triangle-exclamation"></i></span>
                         </div>
                         <p class="kpi-label mb-1">Matériels sous seuil d'alerte</p>
-                        <p class="kpi-value mb-0">{{ $itemsUnderThreshold ?? '7' }}</p>
+                        <p class="kpi-value mb-0">{{ $itemsUnderThreshold ?? '0' }}</p>
                     </div>
                 </div>
             </div>
 
-            {{-- ================= GRAPHIQUE + MOUVEMENTS ================= --}}
+            {{-- ================= GRAPHIQUE + DERNIERS MOUVEMENTS ================= --}}
             <div class="row g-3">
-                <div class="col-xl-7">
+                {{-- Graphique --}}
+                <div class="col-lg-8">
                     <div class="panel">
-                        <p class="panel-title">Répartition des matériels par catégorie</p>
-                        <p class="panel-subtitle">Nombre de fiches enregistrées par catégorie</p>
-                        <div class="chart-wrap">
+                        <p class="panel-title mb-0">Répartition des matériels par catégorie</p>
+                        <p class="panel-subtitle mb-3">Quantité totale en stock par catégorie</p>
+
+                        <div style="position: relative; height: 350px; width: 100%;">
                             <canvas id="graphiqueCategories"></canvas>
                         </div>
                     </div>
                 </div>
 
-                <div class="col-xl-5">
+                {{-- Derniers mouvements --}}
+                <div class="col-lg-4">
                     <div class="panel">
                         <p class="panel-title">Derniers mouvements</p>
                         <p class="panel-subtitle">Entrées, sorties et retours récents</p>
@@ -142,15 +145,32 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @foreach ($items as $item)
+                                    @forelse ($derniersMouvements ?? [] as $mouvement)
                                         <tr>
-                                            <td>{{ $item->name }}</td>
-                                            <td><span
-                                                    class="badge-mouvement badge-entree">{{ $item->stockmovements->first()->movementType->name }}</span>
+                                            <td>{{ $mouvement->item->name ?? '—' }}</td>
+                                            <td>
+                                                @php
+                                                    $typeName = strtolower(str_replace(['é','è','ê'], 'e', $mouvement->movementType->name ?? ''));
+                                                    $badgeClass = 'badge-entree';
+                                                    if (str_contains($typeName, 'sortie')) {
+                                                        $badgeClass = 'badge-sortie';
+                                                    } elseif (str_contains($typeName, 'retour')) {
+                                                        $badgeClass = 'badge-retour';
+                                                    }
+                                                @endphp
+                                                <span class="badge-mouvement {{ $badgeClass }}">
+                                                    {{ $mouvement->movementType->name ?? '—' }}
+                                                </span>
                                             </td>
-                                            <td>{{ $item->quantity }}</td>
+                                            <td>{{ $mouvement->quantity ?? 0 }}</td>
                                         </tr>
-                                    @endforeach
+                                    @empty
+                                        <tr>
+                                            <td colspan="3" class="text-center text-muted py-3">
+                                                Aucun mouvement récent.
+                                            </td>
+                                        </tr>
+                                    @endforelse
                                 </tbody>
                             </table>
                         </div>
@@ -217,9 +237,11 @@
         const sidebar = document.getElementById('sidebar');
         const btnToggleSidebar = document.getElementById('btnToggleSidebar');
 
-        btnToggleSidebar.addEventListener('click', function() {
-            sidebar.classList.toggle('show');
-        });
+        if (btnToggleSidebar && sidebar) {
+            btnToggleSidebar.addEventListener('click', function() {
+                sidebar.classList.toggle('show');
+            });
+        }
 
         // Fermeture des bandeaux de messages (succès / erreurs)
         document.querySelectorAll('.alert-registre-close').forEach(function(bouton) {
@@ -228,72 +250,77 @@
             });
         });
 
-        // Graphique : répartition des matériels par catégorie
-        const donneesCategories = @json($categoriesChartData);
+        // ===== Graphique : répartition des matériels par catégorie =====
+        const donneesCategories = @json($categoriesChartData ?? []);
+
+        // Débogage : à regarder dans la console (F12)
+        console.log('Données du graphique :', donneesCategories);
 
         const ctxCategories = document.getElementById('graphiqueCategories');
 
-        new Chart(ctxCategories, {
-            type: 'bar',
-            data: {
-                labels: donneesCategories.map(c => c.label),
-                datasets: [{
-                    label: 'Nombre de fiches',
-                    data: donneesCategories.map(c => c.total),
-                    backgroundColor: '#12283F',
-                    hoverBackgroundColor: '#A9782C',
-                    borderRadius: 2,
-                    barThickness: 16,
-                }]
-            },
-            options: {
-                indexAxis: 'y',
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: {
-                        display: false
-                    },
-                    tooltip: {
+        if (ctxCategories && donneesCategories.length > 0) {
+            new Chart(ctxCategories, {
+                type: 'bar',
+                data: {
+                    labels: donneesCategories.map(c => c.label),
+                    datasets: [{
+                        label: 'Quantité totale en stock',
+                        data: donneesCategories.map(c => c.total),
                         backgroundColor: '#12283F',
-                        padding: 10,
-                        titleFont: {
-                            family: 'Inter'
-                        },
-                        bodyFont: {
-                            family: 'Inter'
-                        },
-                    }
+                        hoverBackgroundColor: '#A9782C',
+                        borderRadius: 2,
+                        barThickness: 16,
+                    }]
                 },
-                scales: {
-                    x: {
-                        beginAtZero: true,
-                        grid: {
-                            color: '#E2DFD3'
-                        },
-                        ticks: {
-                            font: {
-                                family: 'Inter',
-                                size: 11
-                            },
-                            color: '#4B5665'
-                        }
-                    },
-                    y: {
-                        grid: {
+                options: {
+                    indexAxis: 'y',
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
                             display: false
                         },
-                        ticks: {
-                            font: {
-                                family: 'Inter',
-                                size: 11
-                            },
-                            color: '#1C2530'
+                        tooltip: {
+                            backgroundColor: '#12283F',
+                            padding: 10,
+                            titleFont: { family: 'Inter' },
+                            bodyFont: { family: 'Inter' },
+                            callbacks: {
+                                label: function(context) {
+                                    return 'Quantité : ' + context.parsed.x;
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            beginAtZero: true,
+                            grid: { color: '#E2DFD3' },
+                            ticks: {
+                                font: { family: 'Inter', size: 11 },
+                                color: '#4B5665',
+                                precision: 0,
+                                stepSize: 1
+                            }
+                        },
+                        y: {
+                            grid: { display: false },
+                            ticks: {
+                                font: { family: 'Inter', size: 11 },
+                                color: '#1C2530'
+                            }
                         }
                     }
                 }
-            }
-        });
+            });
+        } else if (ctxCategories) {
+            // Si aucune donnée, on affiche un message
+            const parent = ctxCategories.parentElement;
+            parent.innerHTML = '<div class="text-center text-muted py-5">' +
+                '<i class="fa-solid fa-chart-bar fa-2x mb-2 d-block"></i>' +
+                'Aucune donnée à afficher. Ajoutez des matériels dans des catégories.' +
+                '</div>';
+        }
     </script>
 </body>
 

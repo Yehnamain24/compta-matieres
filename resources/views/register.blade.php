@@ -171,15 +171,16 @@
                             <div class="robustesse-label" id="robustesseLabel">Utilisez majuscules, chiffres et symboles.</div>
                         </div>
 
+                        {{-- ===== CHAMP CORRIGÉ : password_confirmation ===== --}}
                         <div class="mb-4 mt-3">
-                            <label for="mot_de_passe_confirmation" class="form-label">Confirmer le mot de passe</label>
+                            <label for="password_confirmation" class="form-label">Confirmer le mot de passe</label>
                             <div class="input-group input-group-registre">
                                 <span class="input-group-text"><i class="fa-solid fa-lock"></i></span>
                                 <input
                                     type="password"
-                                    class="form-control py-2 @error('mot_de_passe_confirmation') is-invalid @enderror"
-                                    id="mot_de_passe_confirmation"
-                                    name="mot_de_passe_confirmation"
+                                    class="form-control py-2 @error('password_confirmation') is-invalid @enderror"
+                                    id="password_confirmation"
+                                    name="password_confirmation"
                                     placeholder="Ressaisissez le mot de passe"
                                     autocomplete="new-password"
                                     required

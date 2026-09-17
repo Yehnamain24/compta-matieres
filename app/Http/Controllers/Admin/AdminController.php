@@ -2,29 +2,31 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Http\Controllers\Controller;
+use App\Http\Controllers\Controller; // Import de la classe de base
 use Illuminate\Http\Request;
+use App\Models\User;
+use Illuminate\Support\Facades\Hash;
 
 class AdminController extends Controller
 {
     public function index()
     {
         return view('Admin.dashboard', [
-            'totalUsers' => \App\Models\User::count(),
-            'pendingUsers' => \App\Models\User::where('is_approved', false)->count(),
-            'pendingUsersList' => \App\Models\User::where('is_approved', false)->latest()->get(),
-            'users' => \App\Models\User::latest()->get(),
+            'totalUsers' => User::count(),
+            'pendingUsers' => User::where('is_approved', false)->count(),
+            'pendingUsersList' => User::where('is_approved', false)->latest()->get(),
+            'users' => User::latest()->get(),
             'totalItems' => \App\Models\Item::count(),
         ]);
     }
 
-    public function approveUser(\App\Models\User $user)
+    public function approveUser(User $user)
     {
         $user->update(['is_approved' => true]);
         return back()->with('success', 'Utilisateur approuvé.');
     }
 
-    public function rejectUser(\App\Models\User $user)
+    public function rejectUser(User $user)
     {
         $user->delete();
         return back()->with('success', 'Inscription refusée et supprimée.');
@@ -33,20 +35,32 @@ class AdminController extends Controller
     public function users()
     {
         return view('Admin.users', [
-            'users' => \App\Models\User::latest()->get(),
+            'users' => User::latest()->get(),
         ]);
     }
 
-    public function updateRole(Request $request, \App\Models\User $user)
+    /**
+     * Enregistre un nouvel utilisateur (Administrateur uniquement).
+     */
+    public function store(Request $request)
     {
-        $request->validate([
-            'role' => 'required|in:admin,comptable_matieres',
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'surname' => 'required|string|max:255',
+            'matricule' => 'required|string|unique:users',
+            'email' => 'required|string|email|max:255|unique:users',
+            'password' => 'required|string|min:8|confirmed',
         ]);
 
-        $user->update(['role' => $request->role]);
+        // On force le rôle Admin
+        $validated['role'] = 'admin';
+        // Le mot de passe est automatiquement hashé grâce au cast dans le modèle User
+        User::create($validated);
 
-        return back()->with('success', 'Rôle mis à jour pour ' . $user->name . '.');
+        return redirect()->route('admin.users.index')->with('success', 'Administrateur créé avec succès.');
     }
+
+    // La méthode updateRole a été SUPPRIMÉE car on ne change plus les rôles.
 
     public function settings()
     {

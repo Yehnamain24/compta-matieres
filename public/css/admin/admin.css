@@ -795,3 +795,80 @@ a {
         font-size: 1.6rem;
     }
 }
+
+/* =====================================================
+   PROFIL UTILISATEUR (TOPBAR)
+   ===================================================== */
+
+.topbar .dropdown .profile-toggle {
+    display: flex !important;
+    align-items: center !important;
+    gap: 10px !important;
+    background: transparent !important;
+    border: none !important;
+    padding: 5px 10px !important;
+    border-radius: 8px !important;
+    cursor: pointer !important;
+    transition: background-color 0.2s !important;
+}
+
+.topbar .dropdown .profile-toggle:hover {
+    background-color: #f1f3f5 !important;
+}
+
+.topbar .dropdown .profile-icon {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    width: 40px !important;
+    height: 40px !important;
+    min-width: 40px !important;
+    background-color: #1a2b4c !important;
+    color: #ffffff !important;
+    border-radius: 50% !important;
+    font-size: 1.1rem !important;
+}
+
+.topbar .dropdown .profile-name-block {
+    display: flex !important;
+    flex-direction: column !important;
+    text-align: left !important;
+}
+
+.topbar .dropdown .profile-name {
+    font-weight: 600 !important;
+    font-size: 0.9rem !important;
+    color: #1a2b4c !important;
+    line-height: 1.2 !important;
+}
+
+.topbar .dropdown .profile-role {
+    display: flex !important;
+    align-items: center !important;
+    font-size: 0.8rem !important;
+    color: #6c757d !important;
+    line-height: 1.2 !important;
+}
+
+.topbar .dropdown .profile-role i {
+    font-size: 0.7rem !important;
+    margin-left: 4px !important;
+}
+
+.dropdown-menu-profile {
+    border: none !important;
+    border-radius: 10px !important;
+    padding: 8px !important;
+    min-width: 200px !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1) !important;
+}
+
+.dropdown-menu-profile .dropdown-item {
+    border-radius: 6px !important;
+    padding: 8px 12px !important;
+    font-size: 0.9rem !important;
+}
+
+.dropdown-menu-profile .dropdown-item:hover {
+    background-color: #f8f9fa !important;
+}

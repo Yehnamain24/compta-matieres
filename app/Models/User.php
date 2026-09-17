@@ -2,32 +2,42 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
-use Database\Factories\UserFactory;
-use Illuminate\Database\Eloquent\Attributes\Fillable;
-use Illuminate\Database\Eloquent\Attributes\Hidden;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
-#[Fillable([
-    'name',
-    'surname',
-    'matricule',
-    'email',
-    'role',
-    'password',
-    'mot_de_passe_confirmation'
-])]
-#[Hidden(['password', 'remember_token'])]
 class User extends Authenticatable
 {
-    /** @use HasFactory<UserFactory> */
     use HasFactory, Notifiable;
 
     /**
-     * Get the attributes that should be cast.
+     * Les attributs qui peuvent être assignés en masse.
+     *
+     * @var array<int, string>
+     */
+    protected $fillable = [
+        'name',
+        'surname',
+        'matricule',
+        'email',
+        'password',
+        'role',
+        'is_approved',
+    ];
+
+    /**
+     * Les attributs qui doivent être cachés lors de la sérialisation.
+     *
+     * @var array<int, string>
+     */
+    protected $hidden = [
+        'password',
+        'remember_token',
+    ];
+
+    /**
+     * Les attributs qui doivent être castés.
      *
      * @return array<string, string>
      */
@@ -36,9 +46,11 @@ class User extends Authenticatable
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'is_approved' => 'boolean',
         ];
     }
 
+    // Relations
     public function items(): HasMany
     {
         return $this->hasMany(Item::class);

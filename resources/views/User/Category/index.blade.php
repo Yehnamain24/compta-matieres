@@ -33,6 +33,24 @@
 
         <div class="page-body">
 
+            {{-- ================= MESSAGE DE SUCCÈS ================= --}}
+            @if (session('success'))
+                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                    <i class="fa-solid fa-circle-check me-2"></i>
+                    {{ session('success') }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Fermer"></button>
+                </div>
+            @endif
+
+            {{-- ================= MESSAGE D'ERREUR GLOBAL ================= --}}
+            @if ($errors->any())
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    <i class="fa-solid fa-triangle-exclamation me-2"></i>
+                    <strong>Erreur :</strong> Veuillez corriger les champs ci-dessous.
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Fermer"></button>
+                </div>
+            @endif
+
             {{-- ================= TOOLBAR ================= --}}
             <div class="list-toolbar">
                 <button type="button" class="btn btn-navy" data-bs-toggle="modal"
@@ -42,14 +60,14 @@
 
                 <div class="search-box">
                     <i class="fa-solid fa-magnifying-glass"></i>
-                    <input type="text" placeholder="Rechercher une catégorie…">
+                    <input type="text" id="searchInput" placeholder="Rechercher une catégorie…">
                 </div>
             </div>
 
             {{-- ================= TABLE ================= --}}
             <div class="list-panel">
                 <div class="table-responsive">
-                    <table class="table align-middle">
+                   <table class="table align-middle" id="dataTable">
                         <thead>
                             <tr>
                                 <th>Catégorie</th>
@@ -59,11 +77,11 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach ($categories as $category)
+                            @forelse ($categories as $category)
                                 <tr>
                                     <td><span class="category-swatch"></span>{{ $category->name }}</td>
                                     <td>{{ $category->items->count() }}</td>
-                                    <td>{{ $category->created_at }}</td>
+                                    <td>{{ $category->created_at->format('d/m/Y H:i') }}</td>
                                     <td>
                                         <div class="row-actions">
                                             <button type="button" class="btn-action" data-bs-toggle="modal"
@@ -76,7 +94,13 @@
                                         </div>
                                     </td>
                                 </tr>
-                            @endforeach
+                            @empty
+                                <tr>
+                                    <td colspan="4" class="text-center text-muted py-4">
+                                        Aucune catégorie enregistrée pour le moment.
+                                    </td>
+                                </tr>
+                            @endforelse
                         </tbody>
                     </table>
                 </div>
@@ -99,8 +123,20 @@
                     @csrf
                     <div class="modal-body">
                         <label for="name" class="form-label">Nom de la catégorie</label>
-                        <input type="text" class="form-control" id="name" name="name"
-                            placeholder="Ex. Matériel de reprographie" required>
+                        <input type="text"
+                               class="form-control @error('name') is-invalid @enderror"
+                               id="name"
+                               name="name"
+                               value="{{ old('name') }}"
+                               placeholder="Ex. Matériel de reprographie"
+                               required>
+
+                        {{-- Affichage de l'erreur sous le champ --}}
+                        @error('name')
+                            <div class="invalid-feedback d-block mt-2">
+                                <i class="fa-solid fa-circle-exclamation me-1"></i> {{ $message }}
+                            </div>
+                        @enderror
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-outline-navy" data-bs-dismiss="modal">Annuler</button>
@@ -129,8 +165,18 @@
                         @method('PUT')
                         <div class="modal-body">
                             <label for="name_{{ $category->id }}" class="form-label">Nom de la catégorie</label>
-                            <input type="text" class="form-control" id="name_{{ $category->id }}" name="name"
-                                value="{{ $category->name }}" required>
+                            <input type="text"
+                                   class="form-control @error('name') is-invalid @enderror"
+                                   id="name_{{ $category->id }}"
+                                   name="name"
+                                   value="{{ old('name', $category->name) }}"
+                                   required>
+
+                            @error('name')
+                                <div class="invalid-feedback d-block mt-2">
+                                    <i class="fa-solid fa-circle-exclamation me-1"></i> {{ $message }}
+                                </div>
+                            @enderror
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-outline-navy"
@@ -179,13 +225,22 @@
     @endforeach
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-    <script>
-        const sidebar = document.getElementById('sidebar');
-        const btnToggleSidebar = document.getElementById('btnToggleSidebar');
-        btnToggleSidebar.addEventListener('click', function() {
-            sidebar.classList.toggle('show');
+    
+         <script>
+        <script>
+        const searchInput = document.getElementById('searchInput');
+        const tableRows = document.querySelectorAll('#dataTable tbody tr');
+        if (searchInput) {
+        searchInput.addEventListener('input', function () {
+            const term = this.value.toLowerCase();
+            tableRows.forEach(function (row) {
+                row.style.display = row.textContent.toLowerCase().includes(term) ? '' : 'none';
+            });
         });
+    }
+</script>
     </script>
+    
 </body>
 
 </html>

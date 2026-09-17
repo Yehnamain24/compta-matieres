@@ -202,7 +202,7 @@
                             <i class="fa-solid fa-xmark"></i>
                         </button>
                     </div>
-                    <form method="POST" action="#">
+                    <form method="POST" action="{{ route('items.update', $item->id) }}">
                         @csrf
                         @method('PUT')
                         <div class="modal-body">
@@ -298,7 +298,7 @@
                             irréversible.
                         </p>
                     </div>
-                    <form method="POST" action="#">
+                    <form method="POST" action="{{ route('items.destroy', $item->id) }}">
                         @csrf
                         @method('DELETE')
                         <div class="modal-footer">

@@ -50,6 +50,25 @@ class ItemsController extends Controller
 
         return redirect()->back()->with('success', 'Nouveau materiel ajoute !');
     }
+        public function update(Request $request, int $id)
+        {
+        $item = Item::findOrFail($id);
+
+        $data = $request->validate([
+        'code'            => ['string', 'max:500', 'required'],
+        'name'            => ['string', 'max:1000', 'required'],
+        'description'     => ['string', 'max:5000', 'nullable'],
+        'category_id'     => ['required', 'exists:categories,id'],
+        'status_id'       => ['required', 'exists:statuses,id'],
+        'quantity'        => ['required', 'integer', 'min:0'],
+        'alert_threshold' => ['required', 'integer', 'min:0'],
+        'location'        => ['string', 'nullable'],
+    ]);
+
+    $item->update($data);
+
+    return redirect()->back()->with('success', 'Matériel mis à jour !');
+        }
 
     public function delete(mixed $id)
     {
@@ -59,3 +78,4 @@ class ItemsController extends Controller
         return redirect()->back()->with('success', 'Materiel supprime !');
     }
 }
+

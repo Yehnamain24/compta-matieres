@@ -29,6 +29,7 @@
 
         <div class="page-body">
 
+            {{-- Message de succès --}}
             @if (session('success'))
                 <div class="alert-registre alert-registre-success" role="alert">
                     <i class="fa-solid fa-circle-check"></i>
@@ -42,11 +43,30 @@
                 </div>
             @endif
 
+            {{-- Message d'erreur --}}
+            @if ($errors->any())
+                <div class="alert alert-danger">
+                    <ul class="mb-0">
+                        @foreach ($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+            @endif
+
             <div class="row g-3">
                 <div class="col-12">
                     <div class="panel">
-                        <p class="panel-title mb-0">Utilisateurs</p>
-                        <p class="panel-subtitle mb-3">Comptes actifs et leurs rôles</p>
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <div>
+                                <p class="panel-title mb-0">Utilisateurs</p>
+                                <p class="panel-subtitle mb-0">Comptes actifs et leurs rôles</p>
+                            </div>
+                            {{-- Bouton pour ouvrir la modale de création --}}
+                            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalCreateAdmin">
+                                <i class="fa-solid fa-plus"></i> Ajouter un Administrateur
+                            </button>
+                        </div>
 
                         <div class="table-responsive">
                             <table class="table table-registre mb-0">
@@ -57,29 +77,23 @@
                                         <th>Email</th>
                                         <th>Rôle</th>
                                         <th>Statut</th>
-                                        <th class="text-end">Action</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @foreach ($users as $user)
+                                    @forelse ($users as $user)
                                     <tr>
                                         <td>{{ $user->name }} {{ $user->surname }}</td>
                                         <td>{{ $user->matricule }}</td>
                                         <td>{{ $user->email }}</td>
-                                        <td><span class="badge-mouvement badge-entree">{{ $user->role }}</span></td>
+                                        {{-- Le rôle est maintenant fixe : Administrateur --}}
+                                        <td><span class="badge-mouvement badge-entree">Administrateur</span></td>
                                         <td>{{ $user->is_approved ? 'Approuvé' : 'En attente' }}</td>
-                                        <td class="text-end">
-                                            <form method="POST" action="{{ route('admin.users.update-role', $user) }}" class="d-inline">
-                                                @csrf
-                                                @method('PATCH')
-                                                <select name="role" onchange="this.form.submit()" class="form-select form-select-sm d-inline w-auto">
-                                                    <option value="comptable_matieres" @selected($user->role == 'comptable_matieres')>Comptable-matières</option>
-                                                    <option value="admin" @selected($user->role == 'admin')>Admin</option>
-                                                </select>
-                                            </form>
-                                        </td>
                                     </tr>
-                                    @endforeach
+                                    @empty
+                                    <tr>
+                                        <td colspan="5" class="text-center text-muted">Aucun utilisateur trouvé.</td>
+                                    </tr>
+                                    @endforelse
                                 </tbody>
                             </table>
                         </div>
@@ -87,6 +101,54 @@
                 </div>
             </div>
 
+        </div>
+    </div>
+
+    {{-- ================= MODALE DE CRÉATION ================= --}}
+    <div class="modal fade" id="modalCreateAdmin" tabindex="-1" aria-labelledby="modalCreateAdminLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <form action="{{ route('admin.users.store') }}" method="POST">
+                    @csrf
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="modalCreateAdminLabel">Créer un Administrateur</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label for="name" class="form-label">Nom</label>
+                            <input type="text" name="name" id="name" class="form-control" value="{{ old('name') }}" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="surname" class="form-label">Prénom</label>
+                            <input type="text" name="surname" id="surname" class="form-control" value="{{ old('surname') }}" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="matricule" class="form-label">Matricule</label>
+                            <input type="text" name="matricule" id="matricule" class="form-control" value="{{ old('matricule') }}" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="email" class="form-label">Email</label>
+                            <input type="email" name="email" id="email" class="form-control" value="{{ old('email') }}" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="password" class="form-label">Mot de passe</label>
+                            <input type="password" name="password" id="password" class="form-control" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="password_confirmation" class="form-label">Confirmer le mot de passe</label>
+                            <input type="password" name="password_confirmation" id="password_confirmation" class="form-control" required>
+                        </div>
+                        
+                        {{-- On force le rôle Admin --}}
+                        <input type="hidden" name="role" value="admin">
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+                        <button type="submit" class="btn btn-primary">Créer l'Administrateur</button>
+                    </div>
+                </form>
+            </div>
         </div>
     </div>
 
