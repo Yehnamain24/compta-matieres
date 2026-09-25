@@ -5,11 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Créer un compte — Comptabilité-Matières | Faculté des Sciences</title>
 
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="{{ asset('vendor/fonts/inter/inter.css') }}">
+<link rel="stylesheet" href="{{ asset('vendor/fonts/fraunces/fraunces.css') }}">
+<link rel="stylesheet" href="{{ asset('vendor/fonts/ibm-plex-mono/ibm-plex-mono.css') }}">
 
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <link href="{{ asset('vendor/bootstrap/css/bootstrap.min.css') }}" rel="stylesheet">
+    <link rel="stylesheet" href="{{ asset('vendor/fontawesome/css/all.min.css') }}">
 
     <link rel="stylesheet" href="{{ asset('css/public/register.css') }}">
 </head>
@@ -194,7 +196,19 @@
                                 Je m'engage à utiliser cet accès conformément aux règles internes du Service de la Comptabilité-Matières.
                             </label>
                         </div>
-
+                        
+                        <div class="mb-3">
+                         <label for="invitation_code" class="form-label">Code d'invitation</label>
+                        <input type="text" 
+                            name="invitation_code" 
+                            id="invitation_code" 
+                            class="form-control @error('invitation_code') is-invalid @enderror"
+                            placeholder="Fourni par l'administrateur"
+                            required>
+                        @error('invitation_code')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                    </div>
                         <button type="submit" class="btn btn-inscription w-100 d-flex align-items-center justify-content-center gap-2">
                             <i class="fa-solid fa-user-plus"></i> Créer mon compte
                         </button>
@@ -215,7 +229,7 @@
         </div>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="{{ asset('vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
     <script>
         // Affichage / masquage du mot de passe
         const boutonOeil = document.getElementById('basculerMotDePasse');

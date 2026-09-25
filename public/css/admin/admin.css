@@ -622,6 +622,15 @@ a {
     color: var(--red-700);
 }
 
+.table tbody tr[data-bs-toggle="modal"] {
+    transition: background-color 0.15s ease;
+    cursor: pointer;
+}
+
+.table tbody tr[data-bs-toggle="modal"]:hover {
+    background-color: #f8f9fa;
+    box-shadow: inset 3px 0 0 #12283F;
+}
 /* =========================================================
    MODALES
    ========================================================= */

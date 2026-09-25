@@ -6,13 +6,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mouvements — Comptabilité-Matières</title>
 
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link
-        href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap"
-        rel="stylesheet">
+    
+    <link href="{{ asset('vendor/fonts/inter/inter.css') }}" rel="stylesheet">
+    <link href="{{ asset('vendor/fonts/fraunces/fraunces.css') }}" rel="stylesheet">
+    <link href="{{ asset('vendor/fonts/ibm-plex-mono/ibm-plex-mono.css') }}" rel="stylesheet">
 
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <link href="{{ asset('vendor/bootstrap/css/bootstrap.min.css') }}" rel="stylesheet">
+    <link rel="stylesheet" href="{{ asset('vendor/fontawesome/css/all.min.css') }}">
 
     <link rel="stylesheet" href="{{ asset('css/admin/admin.css') }}">
 </head>
@@ -98,8 +98,13 @@
                         </thead>
                         <tbody>
                             @forelse ($movements as $movement)
-                                <tr data-type="{{ strtolower(str_replace(['é','è','ê','É','È','Ê'], 'e', $movement->movementType->name ?? '')) }}" 
+                                {{-- ✅ LIGNE CLIQUABLE : Ouvre la modale de modification --}}
+                                <tr data-bs-toggle="modal" 
+                                    data-bs-target="#modalModifierMouvement{{ $movement->id }}"
+                                    style="cursor: pointer;"
+                                    data-type="{{ strtolower(str_replace(['é','è','ê','É','È','Ê'], 'e', $movement->movementType->name ?? '')) }}" 
                                     data-materiel="{{ strtolower($movement->item->name ?? '') }}">
+                                    
                                     <td>{{ \Carbon\Carbon::parse($movement->movement_date)->format('d/m/Y') }}</td>
                                     <td class="item-name">{{ $movement->item->name ?? 'N/A' }}</td>
                                     <td>{{ $movement->stock_initial ?? '—' }}</td>
@@ -121,7 +126,8 @@
                                     <td>{{ $movement->user->name ?? '—' }}</td>
                                     <td>{{ $movement->stock_final ?? '—' }}</td>
                                     <td>
-                                        <div class="row-actions">
+                                        {{-- ✅ stopPropagation empêche le double-clic --}}
+                                        <div class="row-actions" onclick="event.stopPropagation();">
                                             <button type="button" class="btn-action" data-bs-toggle="modal"
                                                 data-bs-target="#modalModifierMouvement{{ $movement->id }}"
                                                 aria-label="Modifier"><i class="fa-solid fa-pen"></i></button>
@@ -209,6 +215,7 @@
 
     {{-- ================= MODALES MODIFIER / SUPPRIMER PAR MOUVEMENT ================= --}}
     @foreach ($movements as $movement)
+        {{-- Modale de modification --}}
         <div class="modal fade" id="modalModifierMouvement{{ $movement->id }}" tabindex="-1" aria-hidden="true">
             <div class="modal-dialog modal-lg modal-dialog-centered">
                 <div class="modal-content modal-content-registre">
@@ -282,6 +289,7 @@
             </div>
         </div>
 
+        {{-- Modale de suppression --}}
         <div class="modal fade" id="modalSupprimerMouvement{{ $movement->id }}" tabindex="-1" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content modal-content-registre">
@@ -315,7 +323,7 @@
         </div>
     @endforeach
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="{{ asset('vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
     <script>
         // ===== Sidebar toggle =====
         const sidebar = document.getElementById('sidebar');
@@ -368,12 +376,10 @@
             }
         }
 
-        // Écoute sur la recherche
         if (searchInput) {
             searchInput.addEventListener('input', filtrerTableau);
         }
 
-        // Écoute sur le filtre de type
         if (filtreType) {
             filtreType.addEventListener('change', filtrerTableau);
         }

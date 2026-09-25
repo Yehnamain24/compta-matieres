@@ -6,13 +6,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Matériels — Comptabilité-Matières</title>
 
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link
-        href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap"
-        rel="stylesheet">
+    
+   <link href="{{ asset('vendor/fonts/inter/inter.css') }}" rel="stylesheet">
+    <link href="{{ asset('vendor/fonts/fraunces/fraunces.css') }}" rel="stylesheet">
+    <link href="{{ asset('vendor/fonts/ibm-plex-mono/ibm-plex-mono.css') }}" rel="stylesheet">
 
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <link href="{{ asset('vendor/bootstrap/css/bootstrap.min.css') }}" rel="stylesheet">
+    <link rel="stylesheet" href="{{ asset('vendor/fontawesome/css/all.min.css') }}">
 
     <link rel="stylesheet" href="{{ asset('css/admin/admin.css') }}">
 </head>
@@ -43,14 +43,13 @@
                 <div class="d-flex flex-wrap gap-2">
                     <div class="search-box">
                         <i class="fa-solid fa-magnifying-glass"></i>
-                        <input type="text" placeholder="Rechercher un code ou une désignation…">
+                        <input type="text" id="searchInput" placeholder="Rechercher un code ou une désignation…">
                     </div>
                     <select class="filter-select">
                         <option selected>Toutes les catégories</option>
                         @foreach ($categories as $category)
                             <option>{{ $category->name }}</option>
                         @endforeach
-
                     </select>
                     <select class="filter-select">
                         <option selected>Tous les statuts</option>
@@ -64,7 +63,7 @@
             {{-- ================= TABLE ================= --}}
             <div class="list-panel">
                 <div class="table-responsive">
-                    <table class="table align-middle">
+                    <table class="table align-middle" id="dataTable">
                         <thead>
                             <tr>
                                 <th>Code</th>
@@ -78,17 +77,23 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach ($items as $item)
-                                <tr>
+                            @forelse ($items as $item)
+                                {{-- ✅ LIGNE CLIQUABLE : Ouvre la modale de modification --}}
+                                <tr data-bs-toggle="modal" 
+                                    data-bs-target="#modalModifierMateriel{{ $item->id }}"
+                                    style="cursor: pointer;">
+                                    
                                     <td class="item-code">{{ $item->code }}</td>
                                     <td class="item-name">{{ $item->name }}</td>
-                                    <td>Matériel scientifique de laboratoire</td>
-                                    <td><span class="badge-status status-bon">{{ $item->status->name }}</span></td>
+                                    {{-- ✅ CORRECTION : Affiche la vraie catégorie --}}
+                                    <td>{{ $item->category->name ?? '—' }}</td>
+                                    <td><span class="badge-status status-bon">{{ $item->status->name ?? '—' }}</span></td>
                                     <td>{{ $item->quantity }}</td>
                                     <td>{{ $item->alert_threshold }}</td>
-                                    <td>{{ $item->location }}</td>
+                                    <td>{{ $item->location ?? '—' }}</td>
                                     <td>
-                                        <div class="row-actions">
+                                        {{-- ✅ stopPropagation empêche le double-clic --}}
+                                        <div class="row-actions" onclick="event.stopPropagation();">
                                             <button type="button" class="btn-action" data-bs-toggle="modal"
                                                 data-bs-target="#modalModifierMateriel{{ $item->id }}"
                                                 aria-label="Modifier"><i class="fa-solid fa-pen"></i></button>
@@ -99,7 +104,13 @@
                                         </div>
                                     </td>
                                 </tr>
-                            @endforeach
+                            @empty
+                                <tr>
+                                    <td colspan="8" class="text-center text-muted py-4">
+                                        Aucun matériel enregistré pour le moment.
+                                    </td>
+                                </tr>
+                            @endforelse
                         </tbody>
                     </table>
                 </div>
@@ -118,9 +129,6 @@
                         <i class="fa-solid fa-xmark"></i>
                     </button>
                 </div>
-                <a href="{{ route('materiels.export') }}" class="btn btn-outline-light">
-                    <i class="bi bi-file-earmark-excel"></i> Exporter en Excel
-                </a>
                 <form method="POST" action="{{ route('user.items.save') }}">
                     @csrf
                     <div class="modal-body">
@@ -192,6 +200,7 @@
 
     {{-- ================= MODALES MODIFIER / SUPPRIMER PAR MATÉRIEL ================= --}}
     @foreach ($items as $item)
+        {{-- Modale de modification --}}
         <div class="modal fade" id="modalModifierMateriel{{ $item->id }}" tabindex="-1" aria-hidden="true">
             <div class="modal-dialog modal-lg modal-dialog-centered">
                 <div class="modal-content modal-content-registre">
@@ -280,6 +289,7 @@
             </div>
         </div>
 
+        {{-- Modale de suppression --}}
         <div class="modal fade" id="modalSupprimerMateriel{{ $item->id }}" tabindex="-1" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content modal-content-registre">
@@ -315,13 +325,28 @@
         </div>
     @endforeach
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="{{ asset('vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
     <script>
+        // ===== Sidebar toggle =====
         const sidebar = document.getElementById('sidebar');
         const btnToggleSidebar = document.getElementById('btnToggleSidebar');
-        btnToggleSidebar.addEventListener('click', function() {
-            sidebar.classList.toggle('show');
-        });
+        if (btnToggleSidebar && sidebar) {
+            btnToggleSidebar.addEventListener('click', function() {
+                sidebar.classList.toggle('show');
+            });
+        }
+
+        // ===== Recherche dans la table =====
+        const searchInput = document.getElementById('searchInput');
+        const tableRows = document.querySelectorAll('#dataTable tbody tr');
+        if (searchInput) {
+            searchInput.addEventListener('input', function () {
+                const term = this.value.toLowerCase();
+                tableRows.forEach(function (row) {
+                    row.style.display = row.textContent.toLowerCase().includes(term) ? '' : 'none';
+                });
+            });
+        }
     </script>
 </body>
 

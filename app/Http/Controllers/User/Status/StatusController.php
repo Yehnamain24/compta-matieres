@@ -23,19 +23,13 @@ class StatusController extends Controller
      */
     public function store(Request $request)
     {
-        // Validation avec vérification d'unicité
         $validated = $request->validate([
-            'name' => 'required|string|max:255|unique:statuses,name',
-        ], [
-            // Messages d'erreur personnalisés en français
-            'name.required' => 'Le nom du statut est obligatoire.',
-            'name.unique' => 'Ce statut existe déjà dans le système.',
-            'name.max' => 'Le nom ne doit pas dépasser 255 caractères.',
-        ]);
+            'name' => 'required|string|max:255',  // Plus de 'unique'
+    ]);
 
-        Status::create($validated);
+    Status::create($validated);
 
-        return redirect()->route('user.status.show')->with('success', 'Statut ajouté avec succès.');
+    return redirect()->route('user.status.show')->with('success', 'Statut ajouté avec succès.');
     }
 
     /**
@@ -45,10 +39,9 @@ class StatusController extends Controller
     {
         // Validation avec unicité (en ignorant le statut actuel)
         $validated = $request->validate([
-            'name' => 'required|string|max:255|unique:statuses,name,' . $status->id,
+            'name' => 'required|string|max:255',
         ], [
             'name.required' => 'Le nom du statut est obligatoire.',
-            'name.unique' => 'Ce statut existe déjà dans le système.',
             'name.max' => 'Le nom ne doit pas dépasser 255 caractères.',
         ]);
 

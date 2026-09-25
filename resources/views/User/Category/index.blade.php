@@ -6,13 +6,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Catégories — Comptabilité-Matières</title>
 
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link
-        href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap"
-        rel="stylesheet">
+    
+   <link href="{{ asset('vendor/fonts/inter/inter.css') }}" rel="stylesheet">
+    <link href="{{ asset('vendor/fonts/fraunces/fraunces.css') }}" rel="stylesheet">
+    <link href="{{ asset('vendor/fonts/ibm-plex-mono/ibm-plex-mono.css') }}" rel="stylesheet">
 
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <link href="{{ asset('vendor/bootstrap/css/bootstrap.min.css') }}" rel="stylesheet">
+    <link rel="stylesheet" href="{{ asset('vendor/fontawesome/css/all.min.css') }}">
 
     <link rel="stylesheet" href="{{ asset('css/admin/admin.css') }}">
 </head>
@@ -67,7 +67,7 @@
             {{-- ================= TABLE ================= --}}
             <div class="list-panel">
                 <div class="table-responsive">
-                   <table class="table align-middle" id="dataTable">
+                    <table class="table align-middle" id="dataTable">
                         <thead>
                             <tr>
                                 <th>Catégorie</th>
@@ -78,12 +78,17 @@
                         </thead>
                         <tbody>
                             @forelse ($categories as $category)
-                                <tr>
+                                {{-- ✅ LIGNE CLIQUABLE : Ouvre la modale de modification --}}
+                                <tr data-bs-toggle="modal" 
+                                    data-bs-target="#modalModifierCategorie{{ $category->id }}"
+                                    style="cursor: pointer;">
+                                    
                                     <td><span class="category-swatch"></span>{{ $category->name }}</td>
                                     <td>{{ $category->items->count() }}</td>
                                     <td>{{ $category->created_at->format('d/m/Y H:i') }}</td>
                                     <td>
-                                        <div class="row-actions">
+                                        {{-- ✅ stopPropagation empêche le double-clic --}}
+                                        <div class="row-actions" onclick="event.stopPropagation();">
                                             <button type="button" class="btn-action" data-bs-toggle="modal"
                                                 data-bs-target="#modalModifierCategorie{{ $category->id }}"
                                                 aria-label="Modifier"><i class="fa-solid fa-pen"></i></button>
@@ -131,7 +136,6 @@
                                placeholder="Ex. Matériel de reprographie"
                                required>
 
-                        {{-- Affichage de l'erreur sous le champ --}}
                         @error('name')
                             <div class="invalid-feedback d-block mt-2">
                                 <i class="fa-solid fa-circle-exclamation me-1"></i> {{ $message }}
@@ -151,6 +155,7 @@
 
     {{-- ================= MODALES MODIFIER / SUPPRIMER PAR CATÉGORIE ================= --}}
     @foreach ($categories as $category)
+        {{-- Modale de modification --}}
         <div class="modal fade" id="modalModifierCategorie{{ $category->id }}" tabindex="-1" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content modal-content-registre">
@@ -190,6 +195,7 @@
             </div>
         </div>
 
+        {{-- Modale de suppression --}}
         <div class="modal fade" id="modalSupprimerCategorie{{ $category->id }}" tabindex="-1" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content modal-content-registre">
@@ -224,23 +230,29 @@
         </div>
     @endforeach
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-    
-         <script>
-        <script>
+    <script src="{{ asset('vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
+    <script>
+        // ===== Sidebar toggle =====
+        const sidebar = document.getElementById('sidebar');
+        const btnToggleSidebar = document.getElementById('btnToggleSidebar');
+        if (btnToggleSidebar && sidebar) {
+            btnToggleSidebar.addEventListener('click', function() {
+                sidebar.classList.toggle('show');
+            });
+        }
+
+        // ===== Recherche dans la table =====
         const searchInput = document.getElementById('searchInput');
         const tableRows = document.querySelectorAll('#dataTable tbody tr');
         if (searchInput) {
-        searchInput.addEventListener('input', function () {
-            const term = this.value.toLowerCase();
-            tableRows.forEach(function (row) {
-                row.style.display = row.textContent.toLowerCase().includes(term) ? '' : 'none';
+            searchInput.addEventListener('input', function () {
+                const term = this.value.toLowerCase();
+                tableRows.forEach(function (row) {
+                    row.style.display = row.textContent.toLowerCase().includes(term) ? '' : 'none';
+                });
             });
-        });
-    }
-</script>
+        }
     </script>
-    
 </body>
 
 </html>

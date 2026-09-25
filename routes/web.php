@@ -18,13 +18,13 @@ Route::get('/login', function () {
     return view('login');
 })->name('connexion');
 
-Route::get('/register', function () {
-    return view('register');
-})->name('inscription');
 
 // Route pour l'Authentification
-Route::post('/register', [AuthController::class, 'register'])->name('register');
 Route::post('/login', [AuthController::class, 'login'])->name('login');
+
+Route::get('/register', fn() => redirect()->route('connexion'))->name('inscription');
+Route::get('/register', fn() => view('register'))->name('inscription');
+Route::post('/register', [AuthController::class, 'register'])->name('register');
 
 // Routes d'approbation (Admin)
 Route::patch('/users/{user}/approve', [AdminController::class, 'approveUser'])->name('admin.users.approve');
@@ -72,6 +72,8 @@ Route::prefix('/admin')->middleware(['auth', 'role:admin'])->group(function () {
     Route::get('/users', [AdminController::class, 'users'])->name('admin.users.index');
     Route::post('/users', [AdminController::class, 'store'])->name('admin.users.store');
     Route::get('/settings', [AdminController::class, 'settings'])->name('admin.settings');
+    Route::get('/codes', [AdminController::class, 'codes'])->name('admin.codes');
+    Route::post('/codes/generate', [AdminController::class, 'generateCode'])->name('admin.codes.generate');
 });
 
 // Route pour la déconnexion

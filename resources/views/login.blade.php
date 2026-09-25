@@ -6,13 +6,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Connexion — Comptabilité-Matières | Faculté des Sciences</title>
 
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link
-        href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap"
-        rel="stylesheet">
+    
+    <link href="{{ asset('vendor/fonts/inter/inter.css') }}" rel="stylesheet">
+<link href="{{ asset('vendor/fonts/fraunces/fraunces.css') }}" rel="stylesheet">
+<link href="{{ asset('vendor/fonts/ibm-plex-mono/ibm-plex-mono.css') }}" rel="stylesheet">
+        <link href="{{ asset('vendor/fonts/fraunces/fraunces.css') }}" rel="stylesheet">
+        <link href="{{ asset('vendor/fonts/ibm-plex-mono/ibm-plex-mono.css') }}" rel="stylesheet">
 
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <link href="{{ asset('vendor/bootstrap/css/bootstrap.min.css') }}" rel="stylesheet">
+    <link rel="stylesheet" href="{{ asset('vendor/fontawesome/css/all.min.css') }}">
 
     <link rel="stylesheet" href="{{ asset('css/public/login.css') }}">
 </head>
@@ -131,9 +133,9 @@
                         </a>
                     </div>
                     <div class="text-center mt-4">
-                        <a href="{{ route('inscription') }}" class="lien-retour">
-                            <i class="fa-solid fa-arrow-left-long me-1"></i> Vous n'avez pas encore de compte ?
-                        </a>
+                     <small class="text-muted">
+                        <i class="fa-solid fa-lock me-1"></i>Application interne — Création de compte par l'administrateur uniquement
+                    </small>
                     </div>
                 </div>
             </div>
@@ -141,7 +143,7 @@
         </div>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="{{ asset('vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
     <script>
         const boutonOeil = document.getElementById('basculerMotDePasse');
         const champMotDePasse = document.getElementById('mot_de_passe');

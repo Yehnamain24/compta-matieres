@@ -2,13 +2,17 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Http\Controllers\Controller; // Import de la classe de base
+use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\User;
-use Illuminate\Support\Facades\Hash;
+use App\Models\InvitationCode;
+use Illuminate\Support\Str;
 
 class AdminController extends Controller
 {
+    /**
+     * Tableau de bord admin.
+     */
     public function index()
     {
         return view('Admin.dashboard', [
@@ -20,18 +24,27 @@ class AdminController extends Controller
         ]);
     }
 
+    /**
+     * Approuver un utilisateur.
+     */
     public function approveUser(User $user)
     {
         $user->update(['is_approved' => true]);
         return back()->with('success', 'Utilisateur approuvé.');
     }
 
+    /**
+     * Refuser / supprimer un utilisateur.
+     */
     public function rejectUser(User $user)
     {
         $user->delete();
         return back()->with('success', 'Inscription refusée et supprimée.');
     }
 
+    /**
+     * Liste des utilisateurs.
+     */
     public function users()
     {
         return view('Admin.users', [
@@ -54,16 +67,45 @@ class AdminController extends Controller
 
         // On force le rôle Admin
         $validated['role'] = 'admin';
+
         // Le mot de passe est automatiquement hashé grâce au cast dans le modèle User
         User::create($validated);
 
-        return redirect()->route('admin.users.index')->with('success', 'Administrateur créé avec succès.');
+        return redirect()->route('admin.users.index')
+            ->with('success', 'Administrateur créé avec succès.');
     }
 
-    // La méthode updateRole a été SUPPRIMÉE car on ne change plus les rôles.
-
+    /**
+     * Paramètres de l'application.
+     */
     public function settings()
     {
         return view('Admin.settings');
+    }
+
+    /**
+     * Génère un nouveau code d'invitation.
+     */
+    public function generateCode()
+    {
+        $code = strtoupper(Str::random(8)); // ex: A1B2C3D4
+
+        InvitationCode::create([
+            'code' => $code,
+            'created_by' => auth()->id(),
+            'expires_at' => now()->addDays(7),
+        ]);
+
+        return back()->with('success', "Code généré : $code");
+    }
+
+    /**
+     * Liste des codes d'invitation.
+     */
+    public function codes()
+    {
+        return view('Admin.codes', [
+            'codes' => InvitationCode::with(['creator', 'usedBy'])->latest()->get(),
+        ]);
     }
 }

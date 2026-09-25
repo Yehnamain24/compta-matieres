@@ -5,13 +5,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Rapports — Comptabilité-Matières</title>
 
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="{{ asset('vendor/fonts/inter/inter.css') }}">
+<link rel="stylesheet" href="{{ asset('vendor/fonts/fraunces/fraunces.css') }}">
+<link rel="stylesheet" href="{{ asset('vendor/fonts/ibm-plex-mono/ibm-plex-mono.css') }}">
 
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <link href="{{ asset('vendor/bootstrap/css/bootstrap.min.css') }}" rel="stylesheet">
+    <link rel="stylesheet" href="{{ asset('vendor/fontawesome/css/all.min.css') }}">
 
-    <link rel="stylesheet" href="{{ asset('css/admin.css') }}">
+    {{-- ✅ CORRECTION : chemin correct vers css/admin/admin.css --}}
+    <link rel="stylesheet" href="{{ asset('css/admin/admin.css') }}">
 </head>
 <body>
 
@@ -37,14 +40,14 @@
 
                 <div class="search-box">
                     <i class="fa-solid fa-magnifying-glass"></i>
-                    <input type="text" placeholder="Rechercher un rapport…">
+                    <input type="text" id="searchInput" placeholder="Rechercher un rapport…">
                 </div>
             </div>
 
             {{-- ================= TABLE ================= --}}
             <div class="list-panel">
                 <div class="table-responsive">
-                    <table class="table align-middle">
+                    <table class="table align-middle" id="dataTable">
                         <thead>
                             <tr>
                                 <th>Rapport</th>
@@ -57,7 +60,10 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr>
+                            {{-- Rapport 1 --}}
+                            <tr data-bs-toggle="modal" 
+                                data-bs-target="#modalModifierRapport1"
+                                style="cursor: pointer;">
                                 <td class="item-name">État du stock — Août 2026</td>
                                 <td>État du stock</td>
                                 <td>01/08/2026 — 19/08/2026</td>
@@ -65,14 +71,17 @@
                                 <td>Christian Ngono</td>
                                 <td>19/08/2026</td>
                                 <td>
-                                    <div class="row-actions">
+                                    <div class="row-actions" onclick="event.stopPropagation();">
                                         <button type="button" class="btn-action" aria-label="Télécharger"><i class="fa-solid fa-download"></i></button>
                                         <button type="button" class="btn-action" data-bs-toggle="modal" data-bs-target="#modalModifierRapport1" aria-label="Modifier"><i class="fa-solid fa-pen"></i></button>
                                         <button type="button" class="btn-action btn-action-danger" data-bs-toggle="modal" data-bs-target="#modalSupprimerRapport1" aria-label="Supprimer"><i class="fa-solid fa-trash"></i></button>
                                     </div>
                                 </td>
                             </tr>
-                            <tr>
+                            {{-- Rapport 2 --}}
+                            <tr data-bs-toggle="modal" 
+                                data-bs-target="#modalModifierRapport2"
+                                style="cursor: pointer;">
                                 <td class="item-name">Historique des mouvements — Juillet 2026</td>
                                 <td>Historique des mouvements</td>
                                 <td>01/07/2026 — 31/07/2026</td>
@@ -80,14 +89,17 @@
                                 <td>Aïcha Belinga</td>
                                 <td>01/08/2026</td>
                                 <td>
-                                    <div class="row-actions">
+                                    <div class="row-actions" onclick="event.stopPropagation();">
                                         <button type="button" class="btn-action" aria-label="Télécharger"><i class="fa-solid fa-download"></i></button>
                                         <button type="button" class="btn-action" data-bs-toggle="modal" data-bs-target="#modalModifierRapport2" aria-label="Modifier"><i class="fa-solid fa-pen"></i></button>
                                         <button type="button" class="btn-action btn-action-danger" data-bs-toggle="modal" data-bs-target="#modalSupprimerRapport2" aria-label="Supprimer"><i class="fa-solid fa-trash"></i></button>
                                     </div>
                                 </td>
                             </tr>
-                            <tr>
+                            {{-- Rapport 3 --}}
+                            <tr data-bs-toggle="modal" 
+                                data-bs-target="#modalModifierRapport3"
+                                style="cursor: pointer;">
                                 <td class="item-name">Matériels sous seuil d'alerte</td>
                                 <td>Seuils d'alerte</td>
                                 <td>Au 19/08/2026</td>
@@ -95,14 +107,17 @@
                                 <td>Paul Etoga</td>
                                 <td>19/08/2026</td>
                                 <td>
-                                    <div class="row-actions">
+                                    <div class="row-actions" onclick="event.stopPropagation();">
                                         <button type="button" class="btn-action" aria-label="Télécharger"><i class="fa-solid fa-download"></i></button>
                                         <button type="button" class="btn-action" data-bs-toggle="modal" data-bs-target="#modalModifierRapport3" aria-label="Modifier"><i class="fa-solid fa-pen"></i></button>
                                         <button type="button" class="btn-action btn-action-danger" data-bs-toggle="modal" data-bs-target="#modalSupprimerRapport3" aria-label="Supprimer"><i class="fa-solid fa-trash"></i></button>
                                     </div>
                                 </td>
                             </tr>
-                            <tr>
+                            {{-- Rapport 4 --}}
+                            <tr data-bs-toggle="modal" 
+                                data-bs-target="#modalModifierRapport4"
+                                style="cursor: pointer;">
                                 <td class="item-name">État du stock — 2ᵉ trimestre 2026</td>
                                 <td>État du stock</td>
                                 <td>01/04/2026 — 30/06/2026</td>
@@ -110,14 +125,17 @@
                                 <td>Christian Ngono</td>
                                 <td>02/07/2026</td>
                                 <td>
-                                    <div class="row-actions">
+                                    <div class="row-actions" onclick="event.stopPropagation();">
                                         <button type="button" class="btn-action" aria-label="Télécharger"><i class="fa-solid fa-download"></i></button>
                                         <button type="button" class="btn-action" data-bs-toggle="modal" data-bs-target="#modalModifierRapport4" aria-label="Modifier"><i class="fa-solid fa-pen"></i></button>
                                         <button type="button" class="btn-action btn-action-danger" data-bs-toggle="modal" data-bs-target="#modalSupprimerRapport4" aria-label="Supprimer"><i class="fa-solid fa-trash"></i></button>
                                     </div>
                                 </td>
                             </tr>
-                            <tr>
+                            {{-- Rapport 5 --}}
+                            <tr data-bs-toggle="modal" 
+                                data-bs-target="#modalModifierRapport5"
+                                style="cursor: pointer;">
                                 <td class="item-name">Historique des mouvements — Catégorie Informatique</td>
                                 <td>Historique des mouvements</td>
                                 <td>01/01/2026 — 19/08/2026</td>
@@ -125,7 +143,7 @@
                                 <td>Aïcha Belinga</td>
                                 <td>15/08/2026</td>
                                 <td>
-                                    <div class="row-actions">
+                                    <div class="row-actions" onclick="event.stopPropagation();">
                                         <button type="button" class="btn-action" aria-label="Télécharger"><i class="fa-solid fa-download"></i></button>
                                         <button type="button" class="btn-action" data-bs-toggle="modal" data-bs-target="#modalModifierRapport5" aria-label="Modifier"><i class="fa-solid fa-pen"></i></button>
                                         <button type="button" class="btn-action btn-action-danger" data-bs-toggle="modal" data-bs-target="#modalSupprimerRapport5" aria-label="Supprimer"><i class="fa-solid fa-trash"></i></button>
@@ -534,30 +552,4 @@
             <div class="modal-content modal-content-registre">
                 <div class="modal-header">
                     <h5 class="modal-title">Supprimer le rapport</h5>
-                    <button type="button" class="btn-close-registre" data-bs-dismiss="modal" aria-label="Fermer"><i class="fa-solid fa-xmark"></i></button>
-                </div>
-                <div class="modal-body">
-                    <p class="mb-0"><i class="fa-solid fa-triangle-exclamation me-2" style="color:var(--red-700);"></i>Voulez-vous vraiment supprimer le rapport <strong>« Historique des mouvements — Catégorie Informatique »</strong> ? Cette action est irréversible.</p>
-                </div>
-                <form method="POST" action="{{ route('user.rapport.delete', 5) }}">
-                    @csrf
-                    @method('DELETE')
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-outline-navy" data-bs-dismiss="modal">Annuler</button>
-                        <button type="submit" class="btn btn-navy" style="background:var(--red-700); border-color:var(--red-700);"><i class="fa-solid fa-trash me-2"></i>Supprimer</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-    <script>
-        const sidebar = document.getElementById('sidebar');
-        const btnToggleSidebar = document.getElementById('btnToggleSidebar');
-        btnToggleSidebar.addEventListener('click', function () {
-            sidebar.classList.toggle('show');
-        });
-    </script>
-</body>
-</html>
+                    <button type="button" class="btn-close-registre" data-bs-dismiss="modal" aria

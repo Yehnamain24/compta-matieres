@@ -30,6 +30,11 @@
 
                     @if (auth()->user()->role == 'admin')
             <p class="sidebar-section-title">Administration</p>
+                 <a href="{{ route('admin.codes') }}" 
+                class="sidebar-link {{ ($activeMenu ?? '') === 'codes' ? 'active' : '' }}">
+                <i class="fa-solid fa-key"></i>
+                <span>Codes d'invitation</span>
+                </a>
             <a href="{{ route('admin.users.index') }}" class="sidebar-link">
                 <i class="fa-solid fa-user-shield"></i> Utilisateurs
             </a>
