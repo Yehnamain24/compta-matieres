@@ -1,4 +1,5 @@
 [phases.setup]
+
 nixPkgs = ["php85", "php85Extensions.pdo_mysql", "php85Extensions.mbstring", "php85Extensions.xml", "php85Extensions.curl", "php85Extensions.zip", "php85Extensions.gd", "php85Extensions.bcmath", "php85Extensions.tokenizer", "php85Extensions.openssl", "php85Extensions.sodium", "libpng", "libjpeg"]
 
 [phases.install]
@@ -12,4 +13,5 @@ cmds = [
 ]
 
 [start]
-cmd = "php artisan migrate --force && vendor/bin/heroku-php-apache2 public/"
+
+cmd = "php artisan serve --host=0.0.0.0 --port=$PORT"
