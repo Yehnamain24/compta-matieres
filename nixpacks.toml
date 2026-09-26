@@ -1,5 +1,5 @@
 [phases.setup]
-nixPkgs = ["php84", "php84Extensions.pdo_mysql", "php84Extensions.mbstring", "php84Extensions.xml", "php84Extensions.curl", "php84Extensions.zip", "php84Extensions.gd", "php84Extensions.bcmath", "php84Extensions.tokenizer", "php84Extensions.openssl", "php84Extensions.sodium"]
+nixPkgs = ["php85", "php85Extensions.pdo_mysql", "php85Extensions.mbstring", "php85Extensions.xml", "php85Extensions.curl", "php85Extensions.zip", "php85Extensions.gd", "php85Extensions.bcmath", "php85Extensions.tokenizer", "php85Extensions.openssl", "php85Extensions.sodium", "libpng", "libjpeg"]
 
 [phases.install]
 cmds = ["composer install --no-dev --optimize-autoloader --ignore-platform-reqs"]
